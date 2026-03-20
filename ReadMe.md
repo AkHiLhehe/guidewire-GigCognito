@@ -1007,5 +1007,5 @@ GigShield is designed as an **insurer-partnered parametric protection platform**
 
 > **GigShield — Because the last mile deserves a safety net.**
 
-**Phase 1 Demo Video:** [2-minute video link]
+**Phase 1 Demo Video:** https://www.youtube.com/watch?v=Q77hxJIc8bY
 **Team:** [Hackuracy] | Guidewire DEVTrails 2026
