@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Worker {
+  id             String   @id @default(cuid())
+  phone          String   @unique
+  name           String?
+  city           String?
+  zoneId         String?
+  platformId     String?
+  upiId          String?
+  tenureMonths   Int      @default(0)
+  createdAt      DateTime @default(now())
+  policies       Policy[]
+  claims         Claim[]
+  payouts        Payout[]
+  fraudFlags     FraudFlag[]
+}
+
+model Zone {
+  id        String @id
+  city      String
+  lat       Float
+  lng       Float
+  riskLevel String @default("MEDIUM")
+  policies  Policy[]
+}
+
+model Policy {
+  id             String   @id @default(cuid())
+  workerId       String
+  zoneId         String
+  tier           String
+  weeklyPremium  Int
+  status         String   @default("ACTIVE")
+  activatedAt    DateTime @default(now())
+  expiresAt      DateTime
+  waitingUntil   DateTime
+  worker         Worker   @relation(fields: [workerId], references: [id])
+  zone           Zone     @relation(fields: [zoneId], references: [id])
+  claims         Claim[]
+}
+
+model Claim {
+  id          String   @id @default(cuid())
+  workerId    String
+  policyId    String
+  triggerType String
+  zoneId      String
+  confidence  Int
+  fraudScore  Int      @default(0)
+  status      String   @default("PENDING")
+  payoutHours Int
+  createdAt   DateTime @default(now())
+  worker      Worker   @relation(fields: [workerId], references: [id])
+  policy      Policy   @relation(fields: [policyId], references: [id])
+  payout      Payout?
+}
+
+model Payout {
+  id          String    @id @default(cuid())
+  workerId    String
+  claimId     String    @unique
+  amount      Int
+  upiId       String
+  status      String    @default("PENDING")
+  rzpPayoutId String?
+  utr         String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  failReason  String?
+  worker      Worker    @relation(fields: [workerId], references: [id])
+  claim       Claim     @relation(fields: [claimId], references: [id])
+}
+
+model TriggerEvent {
+  id          String   @id @default(cuid())
+  type        String
+  zoneId      String
+  confidence  Int
+  action      String
+  source1Val  Float
+  source2Val  Float
+  firedAt     DateTime @default(now())
+}
+
+model FraudFlag {
+  id        String   @id @default(cuid())
+  workerId  String
+  claimId   String?
+  reason    String
+  signals   Json
+  createdAt DateTime @default(now())
+  worker    Worker   @relation(fields: [workerId], references: [id])
+}

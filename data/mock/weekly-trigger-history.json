@@ -1,0 +1,26 @@
+{
+  "description": "Hypothetical 4-week trigger history for actuarial stress testing",
+  "premiumRange": { "min": 20, "max": 50, "currency": "INR", "cycle": "weekly" },
+  "zones": {
+    "BLR_KOR_01": {
+      "city": "Bengaluru", "season": "monsoon",
+      "weeks": [
+        { "week": "W1", "premiumCollected": 87500, "triggerDays": 2, "claimsPaid": 39200, "workers": 2500 },
+        { "week": "W2", "premiumCollected": 90000, "triggerDays": 3, "claimsPaid": 56000, "workers": 2500 },
+        { "week": "W3", "premiumCollected": 85000, "triggerDays": 1, "claimsPaid": 18000, "workers": 2500 },
+        { "week": "W4", "premiumCollected": 92000, "triggerDays": 4, "claimsPaid": 72000, "workers": 2500 }
+      ],
+      "4wk_BCR": 0.635
+    },
+    "DEL_DWK_01": {
+      "city": "Delhi", "season": "delhi_aqi",
+      "weeks": [
+        { "week": "W1", "premiumCollected": 52000, "triggerDays": 0, "claimsPaid":     0, "workers": 1500 },
+        { "week": "W2", "premiumCollected": 54000, "triggerDays": 4, "claimsPaid": 44800, "workers": 1500 },
+        { "week": "W3", "premiumCollected": 55000, "triggerDays": 5, "claimsPaid": 56000, "workers": 1500 },
+        { "week": "W4", "premiumCollected": 53000, "triggerDays": 3, "claimsPaid": 38400, "workers": 1500 }
+      ],
+      "4wk_BCR": 0.871
+    }
+  }
+}

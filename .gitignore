@@ -1,0 +1,15 @@
+/venv
+venv/
+**/venv/
+.env
+**/venv
+**/.env
+venv
+__pycache__
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+node_modules/
+dist/
