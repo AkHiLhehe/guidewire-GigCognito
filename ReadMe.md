@@ -32,7 +32,7 @@
 
 ## 1. Executive Summary
 
-**GigShield** is an AI-powered, fully parametric income protection platform built exclusively for **Q-Commerce delivery partners** (Zepto, Blinkit) operating in Tier-1 Indian cities. When a verified weather, pollution, or civic disruption hits a worker's registered delivery zone, GigShield automatically pays them for lost earning hours via UPI — **zero forms, zero calls, zero waiting.** The worker never needs to file anything.
+**GigCognito** is an AI-powered, fully parametric income protection platform built exclusively for **Q-Commerce delivery partners** (Zepto, Blinkit) operating in Tier-1 Indian cities. When a verified weather, pollution, or civic disruption hits a worker's registered delivery zone, GigCognito automatically pays them for lost earning hours via UPI — **zero forms, zero calls, zero waiting.** The worker never needs to file anything.
 
 The platform runs on a **weekly premium model** (₹49–₹149/week) mirroring the weekly payout cycle of every major delivery platform — no annual lock-in, no paperwork, no bank visit required.
 
@@ -45,7 +45,7 @@ The platform runs on a **weekly premium model** (₹49–₹149/week) mirroring 
 | Fraud protection | Multi-signal, 7-layer adversarial defense |
 | Platform | Mobile-first PWA (React + Node.js + AWS) |
 
-**Real-world validation:** SEWA's parametric heat-insurance program in Ahmedabad triggered automatic payouts to 50,000 informal workers (₹2.92 crore disbursed in 2024). Bajaj Allianz's ClimateSafe (2025) extends this to gig workers with automatic settlement. GoDigit × Jan Sahas Delhi pilot (2025) delivered live UPI trigger payouts to migrant workers on temperature breach. GigShield operationalises this proven model for the digital-native Q-Commerce cohort.
+**Real-world validation:** SEWA's parametric heat-insurance program in Ahmedabad triggered automatic payouts to 50,000 informal workers (₹2.92 crore disbursed in 2024). Bajaj Allianz's ClimateSafe (2025) extends this to gig workers with automatic settlement. GoDigit × Jan Sahas Delhi pilot (2025) delivered live UPI trigger payouts to migrant workers on temperature breach. GigCognito operationalises this proven model for the digital-native Q-Commerce cohort.
 
 ---
 
@@ -75,7 +75,7 @@ Q-Commerce riders operate from hyper-local dark store zones, work in all weather
 
 ### The Insurance Gap
 
-Currently available products for gig workers address health, accident, and vehicle damage — partially. **Income loss from external disruptions: nobody covers this.** That is the gap GigShield fills.
+Currently available products for gig workers address health, accident, and vehicle damage — partially. **Income loss from external disruptions: nobody covers this.** That is the gap GigCognito fills.
 
 ---
 
@@ -106,7 +106,7 @@ Currently available products for gig workers address health, accident, and vehic
 
 ### What Makes These Users Different?
 
-| Attribute | Implication for GigShield |
+| Attribute | Implication for GigCognito |
 |---|---|
 | Low digital literacy | Onboarding under 5 minutes, WhatsApp-level UX |
 | Week-to-week cash flow | Weekly pricing aligned with platform payout cycle |
@@ -137,14 +137,14 @@ Currently available products for gig workers address health, accident, and vehic
 
 **Context:** July 14th, 11 AM. A sudden cloudburst hits Koramangala. Rainfall crosses 70mm/3hrs. Streets flood in 20 minutes. Rajan's bike cannot navigate.
 
-**Without GigShield:** Rajan waits 4 hours. Loses ₹450 in missed deliveries. Eats into his weekly grocery budget.
+**Without GigCognito:** Rajan waits 4 hours. Loses ₹450 in missed deliveries. Eats into his weekly grocery budget.
 
-**With GigShield:**
+**With GigCognito:**
 - 11:02 AM — OpenWeatherMap detects rainfall > 65mm/3hrs in Koramangala zone; IMD "extremely heavy rain" advisory cross-confirmed
-- 11:03 AM — GigShield cross-checks Rajan's last GPS ping: confirmed in Koramangala at 10:58 AM
+- 11:03 AM — GigCognito cross-checks Rajan's last GPS ping: confirmed in Koramangala at 10:58 AM
 - 11:04 AM — Dual-source confidence confirmed (OWM ✅ + IMD ✅); 6 of 7 fraud signals consistent with genuine stranded worker
 - 11:05 AM — Claim auto-initiated. Fraud score: clean. Payout approved.
-- 11:07 AM — ₹416 credited to Rajan's PhonePe. Notification: *"GigShield ne aapka ₹416 bhej diya. Surakshit rahein."*
+- 11:07 AM — ₹416 credited to Rajan's PhonePe. Notification: *"GigCognito ne aapka ₹416 bhej diya. Surakshit rahein."*
 
 **Total time: ~5 minutes. Zero action required from Rajan.**
 
@@ -154,7 +154,7 @@ Currently available products for gig workers address health, accident, and vehic
 
 **Context:** November 3rd, Delhi. AQI hits 420 (Severe+). Both WAQI and CPCB stations report above 400 for 5 consecutive hours. Priya cannot safely work outdoors.
 
-**With GigShield:**
+**With GigCognito:**
 - WAQI API detects AQI = 420 in Dwarka; CPCB nearest station confirms 415 — dual-source validated
 - Priya's zone GPS pinged at 8:45 AM (shift start); platform shows "active/available" status before trigger
 - Claim auto-triggered. Payout: ₹280 (4 disrupted hours × ₹70/hr declared rate)
@@ -166,7 +166,7 @@ Currently available products for gig workers address health, accident, and vehic
 
 **Context:** August 20th, Mumbai. Sudden political bandh in Andheri. Official Section 144 gazette published. Dark store access blocked.
 
-**With GigShield:**
+**With GigCognito:**
 - PIB gazette feed triggers NLP classifier (DistilBERT confidence: 0.95 ✅); geofence matches Ahmed's registered zone
 - Ahmed (Swiggy Instamart, Andheri) — platform shows "active/available" pre-trigger ✅
 - Payout of ₹500 auto-processed.
@@ -180,7 +180,7 @@ Currently available products for gig workers address health, accident, and vehic
 
 **Context:** September 7th, Pune. PMC pre-announces Ganesh procession routes blocking Kasba Peth zone 6 PM–11 PM.
 
-**With GigShield:**
+**With GigCognito:**
 - Festival calendar (updated weekly from PMC/municipal announcements) pre-flags Suresh's zone
 - At 5:50 PM: system activates coverage for the disruption window
 - Payout of ₹250 auto-processed at 6:01 PM
@@ -192,7 +192,7 @@ Currently available products for gig workers address health, accident, and vehic
 
 **Context:** May 18th, Jaipur. Temperature hits 46°C. IMD heat wave advisory active for 2+ consecutive days.
 
-**With GigShield:**
+**With GigCognito:**
 - OpenWeatherMap confirms temp > 44°C; IMD advisory cross-validated
 - Worker's zone confirmed active (GPS ping within 2 hours)
 - ₹280 payout processed — covers peak heat window (11 AM–3 PM)
@@ -203,17 +203,17 @@ Currently available products for gig workers address health, accident, and vehic
 
 Rajan is at a pickup point when a severe storm cuts mobile connectivity for 40 minutes. His GPS drops mid-shift.
 
-**GigShield does NOT penalise him.** The system looks back 30 minutes: his pre-drop location is confirmed in the active disruption zone, and the weather trigger is already active. Claim processes without interruption — Rajan never sees a flag.
+**GigCognito does NOT penalise him.** The system looks back 30 minutes: his pre-drop location is confirmed in the active disruption zone, and the weather trigger is already active. Claim processes without interruption — Rajan never sees a flag.
 
 ---
 
 ## 5. Solution Overview
 
-GigShield is a **parametric income insurance platform** — payouts are triggered by measurable, pre-defined external events, not subjective claim assessments.
+GigCognito is a **parametric income insurance platform** — payouts are triggered by measurable, pre-defined external events, not subjective claim assessments.
 
 ### How It Differs from Traditional Insurance
 
-| Aspect | Traditional Insurance | GigShield (Parametric) |
+| Aspect | Traditional Insurance | GigCognito (Parametric) |
 |---|---|---|
 | Claim process | Worker files manually | Zero-touch, fully automated |
 | Proof required | Documents, photos, receipts | None — external data verifies |
@@ -237,7 +237,7 @@ GigShield is a **parametric income insurance platform** — payouts are triggere
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         GIGSHIELD PLATFORM FLOW                             │
+│                         GigCognito PLATFORM FLOW                             │
 ├──────────────┬──────────────────────────────────┬───────────────────────────┤
 │  ONBOARDING  │    ACTIVE POLICY MANAGEMENT      │   CLAIM & PAYOUT          │
 │  (< 5 min)   │                                  │                           │
@@ -274,7 +274,7 @@ All triggers are **objective, third-party verifiable, monitored every 15 minutes
 | **T4** | Heatwave | OpenWeatherMap + IMD heat alert | Temp > 44°C for ≥ 2 consecutive days with IMD advisory | OWM ≥ threshold AND IMD advisory active | 4 hrs/day (11 AM–3 PM peak) |
 | **T5** | Curfew / Section 144 | PIB gazette + State govt feed + DistilBERT NLP | Official order for registered pin code ≥ 4 hrs; NLP confidence ≥ 0.92 | Official source attribution confirmed + geofence match | Full declared disruption hours |
 | **T6** | Festival Road Blockage | Municipal calendar (PMC/MCGM/BBMP) | Pre-announced route closure > 2 hrs in active zone | Municipal source + zone match | Disrupted hours |
-| **T7** | Platform App Outage | GigShield heartbeat monitor + platform status page | App unresponsive > 90 min during peak hours (8–11 AM or 6–10 PM) | 3 consecutive failed pings + status page confirms | 25% per hour, max 75% daily |
+| **T7** | Platform App Outage | GigCognito heartbeat monitor + platform status page | App unresponsive > 90 min during peak hours (8–11 AM or 6–10 PM) | 3 consecutive failed pings + status page confirms | 25% per hour, max 75% daily |
 
 ### Trigger Fallback Sources
 
@@ -301,7 +301,7 @@ Confidence Score (0–100) =
 
 ### Zone-Based Precision
 
-GigShield operates at **pin code / dark store zone level** — not city level. A trigger in Koramangala does NOT auto-pay a worker in Whitefield (same city, different zone). This precision is critical for accurate payouts, fraud prevention, and cost control.
+GigCognito operates at **pin code / dark store zone level** — not city level. A trigger in Koramangala does NOT auto-pay a worker in Whitefield (same city, different zone). This precision is critical for accurate payouts, fraud prevention, and cost control.
 
 ---
 
@@ -353,7 +353,7 @@ GigShield operates at **pin code / dark store zone level** — not city level. A
 
 ### Why Weekly?
 
-Blinkit and Zepto release earnings every 7 days. A monthly premium requires saving across 4 weeks — an unrealistic ask for workers living week-to-week. GigShield mirrors the platform payout cadence exactly.
+Blinkit and Zepto release earnings every 7 days. A monthly premium requires saving across 4 weeks — an unrealistic ask for workers living week-to-week. GigCognito mirrors the platform payout cadence exactly.
 
 ### Weekly Premium Tiers
 
@@ -367,11 +367,11 @@ Blinkit and Zepto release earnings every 7 days. A monthly premium requires savi
 
 ### Competitor Benchmarking
 
-| Product | Weekly Premium Equiv. | Coverage | GigShield Differentiation |
+| Product | Weekly Premium Equiv. | Coverage | GigCognito Differentiation |
 |---|---|---|---|
 | Bajaj Allianz ClimateSafe (2025) | ~₹69 base | Weather events only | Multi-trigger + AI dynamic pricing + zero-touch |
 | SEWA Parametric Heat (2024) | ~₹35 equivalent | Heat events only | Zone-specific, real-time AQI + rain + social triggers |
-| **GigShield Standard** | ₹89 (dynamic) | Weather + AQI + flood + curfew + festival | Platform-embedded, instant payout, fraud-defended |
+| **GigCognito Standard** | ₹89 (dynamic) | Weather + AQI + flood + curfew + festival | Platform-embedded, instant payout, fraud-defended |
 
 ### ML-Driven Dynamic Pricing
 
@@ -606,7 +606,7 @@ A single bad actor is hard to detect in isolation. A ring of 500 produces a **st
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        GIGSHIELD ARCHITECTURE                                │
+│                        GigCognito ARCHITECTURE                                │
 ├─────────────────┬────────────────────────────────┬───────────────────────────┤
 │   FRONTEND      │         BACKEND                │   EXTERNAL INTEGRATIONS   │
 │  (React PWA)    │                                │                           │
@@ -765,7 +765,7 @@ const payout = await razorpay.payouts.create({
   currency: "INR",
   mode: "UPI",
   purpose: "payout",
-  narration: `GigShield Income Protection - ${eventId}`
+  narration: `GigCognito Income Protection - ${eventId}`
 });
 ```
 
@@ -990,9 +990,9 @@ India's Q-Commerce sector reached **> $10 billion GMV** with **30 million monthl
 |---|---|
 | **SEWA Parametric Heat Insurance (India, 2024)** | Automatic payouts to 50,000 informal workers; ₹2.92 crore disbursed on temperature threshold breach — direct proof of viability for India's informal workforce |
 | **Bajaj Allianz ClimateSafe (2025)** | Gig-worker parametric product with automatic settlement; confirms IRDAI comfort with this structure |
-| **AXA Climate India (AQI-linked)** | Automatic cash transfer on AQI breach — direct precedent for GigShield's T2 trigger design |
+| **AXA Climate India (AQI-linked)** | Automatic cash transfer on AQI breach — direct precedent for GigCognito's T2 trigger design |
 | **GoDigit × Jan Sahas Delhi (2025)** | Live parametric pilot — auto UPI payouts when temp exceeded 42°C for 5 consecutive days; zero claims filing |
-| **Acko + Ola (2019)** | Embedded insurance via B2B2C model achieved 60%+ attachment rate — validates GigShield's GTM strategy |
+| **Acko + Ola (2019)** | Embedded insurance via B2B2C model achieved 60%+ attachment rate — validates GigCognito's GTM strategy |
 
 ### Unit Economics
 
@@ -1008,9 +1008,9 @@ India's Q-Commerce sector reached **> $10 billion GMV** with **30 million monthl
 
 ### Go-to-Market Strategy: B2B2C Embedded Distribution
 
-Direct-to-worker insurance sales fail in India — historical conversion rates for direct gig worker insurance are under 3%. GigShield's GTM is **B2B2C embedded distribution:**
+Direct-to-worker insurance sales fail in India — historical conversion rates for direct gig worker insurance are under 3%. GigCognito's GTM is **B2B2C embedded distribution:**
 
-GigShield approaches Zepto/Blinkit and frames the product as a **worker welfare initiative**. The platform embeds premium deduction into the weekly settlement cycle — the worker opts in once at onboarding, and ₹89/week is deducted from their Friday payout automatically. Platform receives a **15% revenue share** on collected premiums AND gets measurable worker retention benefit during monsoon season — reducing recruitment and retraining costs.
+GigCognito approaches Zepto/Blinkit and frames the product as a **worker welfare initiative**. The platform embeds premium deduction into the weekly settlement cycle — the worker opts in once at onboarding, and ₹89/week is deducted from their Friday payout automatically. Platform receives a **15% revenue share** on collected premiums AND gets measurable worker retention benefit during monsoon season — reducing recruitment and retraining costs.
 
 This is exactly the model Acko used with Ola in 2019 to achieve **60%+ insurance attachment rates.** Embedded financial products consistently outperform standalone products in this demographic.
 
@@ -1023,7 +1023,7 @@ This is exactly the model Acko used with Ola in 2019 to achieve **60%+ insurance
 
 ### Regulatory Alignment
 
-GigShield is designed as an **insurer-partnered parametric protection platform** distributed via a licensed intermediary / embedded distribution model. GigShield does not hold or claim independent underwriting authority.
+GigCognito is designed as an **insurer-partnered parametric protection platform** distributed via a licensed intermediary / embedded distribution model. GigCognito does not hold or claim independent underwriting authority.
 
 | Framework | Alignment |
 |---|---|
@@ -1058,7 +1058,7 @@ GigShield is designed as an **insurer-partnered parametric protection platform**
 
 ---
 
-> **GigShield — Because the last mile deserves a safety net.**
+> **GigCognito — Because the last mile deserves a safety net.**
 
 **Phase 1 Demo Video:** https://www.youtube.com/watch?v=Q77hxJIc8bY
 **Team:** [Hackuracy] | Guidewire DEVTrails 2026
