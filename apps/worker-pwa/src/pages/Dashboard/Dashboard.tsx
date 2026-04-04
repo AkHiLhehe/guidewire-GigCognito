@@ -174,13 +174,15 @@ export default function Dashboard() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(10,14,26,0.95)", backdropFilter: "blur(12px)", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", justifyContent: "space-around", padding: "8px 0 12px" }}>
         {[
-          { id: "home",   icon: "⊞", label: "Home" },
-          { id: "policy", icon: "🛡", label: "Policy" },
-          { id: "claims", icon: "💸", label: "Claims" },
+          { id: "home",   icon: "⊞", label: "Home",   path: "/dashboard" },
+          { id: "policy", icon: "🛡", label: "Policy",  path: "/policy"    },
+          { id: "claims", icon: "💸", label: "Claims",  path: "/claims"    },
+          { id: "vote",   icon: "🗳️", label: "Vote",    path: "/community-triggers" },
+          { id: "transparency", icon: "👁️", label: "Transparency", path: "/transparency-dashboard" },
         ].map(n => (
-          <button key={n.id} className="nav-btn" onClick={() => setActiveTab(n.id as any)}>
+          <button key={n.id} className="nav-btn" onClick={() => navigate(n.path)}>
             <span style={{ fontSize: 20 }}>{n.icon}</span>
-            <span style={{ fontSize: 11, color: activeTab === n.id ? "#378ADD" : "rgba(255,255,255,0.35)", fontWeight: activeTab === n.id ? 600 : 400 }}>{n.label}</span>
+            <span style={{ fontSize: 11, color: n.id === "home" ? "#378ADD" : "rgba(255,255,255,0.35)", fontWeight: n.id === "home" ? 600 : 400 }}>{n.label}</span>
           </button>
         ))}
       </div>
