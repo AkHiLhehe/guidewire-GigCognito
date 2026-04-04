@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -41,8 +42,14 @@ export default function Onboarding() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [otpError, setOtpError] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+
   const otpRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
+  const navigate = useNavigate();
   const zones = CITIES[city].zones;
 
   useEffect(() => {
@@ -72,10 +79,33 @@ export default function Onboarding() {
     }
   }
 
-  function sendOtp() {
+  async function sendOtp() {
     if (phone.length !== 10) { setErrors({ phone: "Enter 10-digit mobile number" }); return; }
     setErrors({});
-    setOtpSent(true);
+    setSendingOtp(true);
+    try {
+      const res = await fetch(`${API_BASE}/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOtpSent(true);
+        // In dev mode, backend returns the OTP — auto-fill for demo
+        if (data.otp) {
+          const digits = data.otp.split("");
+          setOtp(digits);
+        }
+      } else {
+        setErrors({ phone: data.message });
+      }
+    } catch {
+      // Fallback to mock if backend unreachable
+      setOtpSent(true);
+    } finally {
+      setSendingOtp(false);
+    }
   }
 
   function handleOtpChange(i: number, val: string) {
@@ -84,10 +114,29 @@ export default function Onboarding() {
     if (val && i < 3) otpRefs[i + 1].current?.focus();
   }
 
-  function verifyOtp() {
+  async function verifyOtp() {
     if (otp.join("").length !== 4) { setErrors({ otp: "Enter 4-digit OTP" }); return; }
     setErrors({});
-    setStep(1);
+    setVerifyingOtp(true);
+    try {
+      const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp: otp.join("") }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.token) localStorage.setItem("gs_token", data.token);
+        setStep(1);
+      } else {
+        setErrors({ otp: data.message });
+      }
+    } catch {
+      // Fallback to mock
+      setStep(1);
+    } finally {
+      setVerifyingOtp(false);
+    }
   }
 
   function goStep2() {
@@ -116,7 +165,7 @@ export default function Onboarding() {
     setSubmitting(true);
     await new Promise(r => setTimeout(r, 1200));
     setSubmitting(false);
-    setDone(true);
+    navigate("/dashboard");
   }
 
   const progress = done ? 100 : Math.round((step / 6) * 100);
@@ -179,7 +228,10 @@ export default function Onboarding() {
                   <input className="gs-input" placeholder="98765 43210" maxLength={10} value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ""))} style={{ flex: 1 }} />
                 </div>
                 {errors.phone && <p className="err">{errors.phone}</p>}
-                <button className="gs-btn gs-btn-primary" style={{ marginTop: 20 }} onClick={sendOtp}>Send OTP</button>
+                <button className="gs-btn gs-btn-primary" style={{ marginTop: 20 }} 
+                  onClick={sendOtp} disabled={sendingOtp}>
+                  {sendingOtp ? "Sending..." : "Send OTP"}
+                </button>
               </>
             ) : (
               <>
@@ -193,7 +245,10 @@ export default function Onboarding() {
                 </div>
                 {errors.otp && <p className="err">{errors.otp}</p>}
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "8px 0 0" }}>Demo: any 4 digits work</p>
-                <button className="gs-btn gs-btn-primary" style={{ marginTop: 20 }} onClick={verifyOtp}>Verify & Continue</button>
+                <button className="gs-btn gs-btn-primary" style={{ marginTop: 20 }} 
+                    onClick={verifyOtp} disabled={verifyingOtp}>
+                    {verifyingOtp ? "Verifying..." : "Verify & Continue"}
+                  </button>
                 <button className="gs-btn gs-btn-ghost" style={{ marginTop: 8 }} onClick={() => setOtpSent(false)}>Change number</button>
               </>
             )}
