@@ -2,7 +2,7 @@ import axios from "axios";
 import { TRIGGER_THRESHOLDS } from "@gigshield/shared-config";
 import { evaluateTrigger } from "./trigger-engine.service";
 
-const OWM_KEY = process.env.OPENWEATHER_API_KEY ?? "MOCK";
+const OWM_KEY = process.env.OWM_API_KEY ?? "MOCK";
 
 export async function checkRainfallTrigger(zone: { id: string; lat: number; lng: number }) {
   try {
