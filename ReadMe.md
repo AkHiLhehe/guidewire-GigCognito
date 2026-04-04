@@ -46,7 +46,11 @@ This repo now includes both concept/demo UX flows and live API-backed flows.
 13. [Real-Time Data Integration](#13-real-time-data-integration)
 14. [Onboarding Flow](#14-onboarding-flow)
 15. [Payout Processing](#15-payout-processing)
-
+16. [Dashboard Design](#16-dashboard-design)
+17. [Non-Functional Requirements](#17-non-functional-requirements)
+18. [Development Roadmap](#18-development-roadmap)
+19. [Business Viability & Regulatory Alignment](#19-business-viability--regulatory-alignment)
+20. [Appendix: Data Sources](#20-appendix-data-sources)
 21. [Worker Transparency Dashboard](#21-worker-transparency-dashboard)
 22. [Community Voting for New Triggers](#22-community-voting-for-new-triggers)
 23. [Local Development (Monorepo)](#23-local-development-monorepo)
@@ -148,7 +152,7 @@ Currently available products for gig workers address health, accident, and vehic
 | Insurance penetration in gig workforce | <5% | IRDAI Bima Sugam baseline, 2025 |
 | India parametric insurance CAGR | ~11.3% (2024–2028) | Allied Market Research |
 
-**Addressable income-loss pool:** 475,000 workers × ₹5,000 avg. weekly earnings × 3.5 disruption-affected weeks/year × 38% avg. income loss = **~₹3,150 crore/year in direct income loss.** *(Pricing-model assumption for stress testing — to be calibrated against pilot data.)*
+**Addressable income-loss pool:** 475,000 workers × ₹5,000 avg. weekly earnings × ~4.5 disruption-affected weeks/year *(disruption days average 3–5/month = 36–60 days/year; ~4.5 qualifying threshold weeks/year after applying multi-day event grouping — to be calibrated against pilot data)* × 38% avg. income loss = **~₹4,060 crore/year in direct income loss.** *(Pricing-model assumption for stress testing — to be calibrated against pilot claims data.)*
 
 > **Affordability check:** Standard tier (₹89/week) = ~1.6–2.2% of avg. weekly earnings — below the 2% micro-insurance viability threshold (CGAP Microinsurance Guidelines, 2023).
 
@@ -190,8 +194,8 @@ Currently available products for gig workers address health, accident, and vehic
 **Context:** August 20th, Mumbai. Sudden political bandh in Andheri. Official Section 144 gazette published. Dark store access blocked.
 
 **With KaryaKavach:**
-- PIB gazette feed triggers NLP classifier (DistilBERT confidence: 0.95 ✅); geofence matches Ahmed's registered zone
-- Ahmed (Swiggy Instamart, Andheri) — platform shows "active/available" pre-trigger ✅
+- PIB gazette feed triggers NLP classifier (DistilBERT confidence: 0.92 ✅); geofence matches Ahmed's registered zone
+- Ahmed (Blinkit, Andheri) — platform shows "active/available" pre-trigger ✅
 - Payout of ₹500 auto-processed.
 - Notification: *"Mumbai bandh detected in your area. ₹500 sent to your UPI. Stay safe."*
 
@@ -328,50 +332,6 @@ KaryaKavach operates at **pin code / dark store zone level** — not city level.
 
 ---
 
-
-## 8A. Underwriting, Triggers, Pricing & Actuarial Logic (Parametric Insurance)
-
-### Underwriting
-- Risk is assessed by city, peril type (trigger), and worker activity tier.
-- Only workers with active policies, correct zone registration, and no duplicate claims are eligible for payout.
-- New accounts have a 7-day waiting period before first claim eligibility.
-
-### Triggers
-- Payouts are triggered by objective, third-party data (e.g., weather, AQI, government advisories).
-- Every trigger requires at least two independent data sources to agree (dual-source rule).
-- Triggers are polled every 15 minutes; if threshold is crossed, eligible workers are auto-processed for payout.
-- No manual claim filing — the process is zero-touch for the worker.
-
-### Pricing — Weekly Premium Model
-- Target premium range: ₹20–₹750 per worker per week (see tier table below).
-- Formula:
-  
-  $\text{Weekly Premium} = (\text{Trigger Probability}) \times (\text{Avg Income Lost per Day}) \times (\text{Days Exposed})$
-
-- Premiums are adjusted for city, peril type, and worker activity tier.
-- Weekly cycle matches gig payout rhythm — never monthly.
-
-### Actuarial Basics
-- BCR (Burning Cost Rate):
-  
-  $\text{BCR} = \frac{\text{Total Claims Paid}}{\text{Total Premium Collected}}$
-
-- Target BCR: 0.55–0.70 (i.e., 55–70% of premium goes to payouts).
-- If Loss Ratio > 85%, new enrollments are suspended to control risk.
-- Stress scenario modeling: e.g., simulate a 14-day monsoon to test solvency and payout sufficiency.
-
-
-**Implementation:**
-- The backend (Node.js, see `/apps/api-server/src/services/claim/claim-pipeline.service.ts`, `/claim.service.ts`, and `/policy/policy.service.ts`) enforces all underwriting, trigger, pricing, payout, and audit logic:
-  - Weather API and other data confirm event threshold.
-  - Worker eligibility and anti-fraud checks (including GPS) are performed before payout.
-  - Payout is calculated as fixed amount per day × number of trigger days.
-  - Transfers are initiated automatically; all records are updated.
-  - **Detailed audit logging**: Every policy and claim action (creation, approval, rejection, payout, rollback, fraud flag, admin review, appeal) is logged to a centralized audit log (`logs/audit.log`) with timestamp, action, actor, entityId, and details, aligned with IRDAI requirements.
-  - PolicyCenter and BillingCenter logging stubs are included for future integration.
-  - The process is zero-touch for the worker and completes within minutes.
-
----
 ## 8. Weekly Premium Model & Business Viability
 
 ### Why Weekly?
@@ -424,6 +384,49 @@ The weekly premium is recalculated every Sunday for the upcoming week:
 | **Post-reinsurance operating margin** | **~20–25%** | **~25–30%** |
 
 > **Model Assumption Note:** The income-loss pool figures are Phase 1 pricing simulation assumptions derived from estimated active workforce × avg. weekly earnings × estimated disruption-event frequency. Real loss frequency will be calibrated against pilot claims data.
+
+---
+
+## 8A. Underwriting, Triggers, Pricing & Actuarial Logic (Parametric Insurance)
+
+### Underwriting
+- Risk is assessed by city, peril type (trigger), and worker activity tier.
+- Only workers with active policies, correct zone registration, and no duplicate claims are eligible for payout.
+- New accounts have a 7-day waiting period before first claim eligibility.
+
+### Triggers
+- Payouts are triggered by objective, third-party data (e.g., weather, AQI, government advisories).
+- Every trigger requires at least two independent data sources to agree (dual-source rule).
+- Triggers are polled every 15 minutes; if threshold is crossed, eligible workers are auto-processed for payout.
+- No manual claim filing — the process is zero-touch for the worker.
+
+### Pricing — Weekly Premium Model
+- Offered premium tiers: ₹49–₹149 per worker per week (Basic / Standard / Premium — see tier table in Section 8 above). The underlying actuarial formula can produce a wider theoretical range; consumer tiers are fixed at three price points.
+- Formula:
+  
+  $\text{Weekly Premium} = (\text{Trigger Probability}) \times (\text{Avg Income Lost per Day}) \times (\text{Days Exposed})$
+
+- Premiums are adjusted for city, peril type, and worker activity tier.
+- Weekly cycle matches gig payout rhythm — never monthly.
+
+### Actuarial Basics
+- BCR (Burning Cost Rate):
+  
+  $\text{BCR} = \frac{\text{Total Claims Paid}}{\text{Total Premium Collected}}$
+
+- Target BCR: 0.55–0.70 (i.e., 55–70% of premium goes to payouts).
+- If Loss Ratio > 85%, new enrollments are suspended to control risk.
+- Stress scenario modeling: e.g., simulate a 14-day monsoon to test solvency and payout sufficiency.
+
+**Implementation:**
+- The backend (Node.js, see `/apps/api-server/src/services/claim/claim-pipeline.service.ts`, `/claim.service.ts`, and `/policy/policy.service.ts`) enforces all underwriting, trigger, pricing, payout, and audit logic:
+  - Weather API and other data confirm event threshold.
+  - Worker eligibility and anti-fraud checks (including GPS) are performed before payout.
+  - Payout is calculated as fixed amount per day × number of trigger days.
+  - Transfers are initiated automatically; all records are updated.
+  - **Detailed audit logging**: Every policy and claim action (creation, approval, rejection, payout, rollback, fraud flag, admin review, appeal) is logged to a centralized audit log (`logs/audit.log`) with timestamp, action, actor, entityId, and details, aligned with IRDAI requirements.
+  - PolicyCenter and BillingCenter logging stubs are included for future integration.
+  - The process is zero-touch for the worker and completes within minutes.
 
 ---
 
@@ -651,9 +654,9 @@ A single bad actor is hard to detect in isolation. A ring of 500 produces a **st
 │  - Predictive   │  - Ring anomaly detection      │                           │
 │    claims view  │                                │                           │
 │                 │  node-cron (trigger polling    │                           │
-│                 │   every 15 min, Node-native)   │                           │
+│                 │   every 15 min, 3rd-party npm) │                           │
 │                 │  Bull + Redis (payout job      │                           │
-│                 │   queue, Node-native)          │                           │
+│                 │   queue, 3rd-party npm)        │                           │
 └─────────────────┴────────────────────────────────┴───────────────────────────┘
 ```
 
@@ -667,14 +670,14 @@ A single bad actor is hard to detect in isolation. A ring of 500 produces a **st
 | **ML Service** | Python + FastAPI | Standard for XGBoost / HuggingFace model serving |
 | **Database** | PostgreSQL 15 (AWS RDS) | Reliable relational store for policies, claims, audit logs |
 | **Cache** | Redis (AWS ElastiCache) | API response cache, session store, Bull job queue backing |
-| **Job Queue** | Bull + Redis | Node-native async queue for payout processing (NOT Celery — that's Python-only) |
-| **Trigger Monitor** | node-cron | Node-native 15-minute cron job for polling all zone APIs |
+| **Job Queue** | Bull + Redis | Third-party npm async queue for payout processing (NOT Celery — that's Python-only) |
+| **Trigger Monitor** | node-cron | Third-party npm cron job for 15-minute trigger polling (not part of Node.js stdlib) |
 | **Authentication** | JWT + OTP (Twilio SMS) | Phone-number-first; no email required |
 | **Payments** | Razorpay Sandbox (UPI) | Real API, sandbox mode, India-native rails |
 | **Notifications** | Twilio WhatsApp Business API | Workers prefer WhatsApp; higher engagement than SMS |
 | **Hosting — Frontend** | AWS Amplify | Free tier, HTTPS auto-provisioned, CDN included, ~$0 for hackathon scale |
 | **Hosting — Backend (Node)** | AWS EC2 t3.micro | Free tier eligible (750 hrs/month for 12 months), HTTPS via ACM |
-| **Hosting — ML Service** | EC2 t3.small + HuggingFace Hub | Models downloaded from HuggingFace Hub, inference runs locally on EC2 |
+| **Hosting — ML Service** | EC2 t3.medium (4 GB RAM) + HuggingFace Hub | Models loaded sequentially on demand (DistilBERT, XGBoost, Isolation Forest not held in memory simultaneously); t3.small (2 GB) is insufficient for concurrent model loading |
 | **Database Hosting** | AWS RDS PostgreSQL (db.t3.micro) | Free tier eligible (750 hrs/month), automated backups |
 | **Storage** | AWS S3 | Audit logs, model artifacts, festival calendar JSONs — free tier 5GB |
 | **Maps / Geo** | Google Maps Platform + Geolocation API | Zone selection UI + IP-based geo-validation for anti-spoofing |
@@ -686,7 +689,7 @@ A single bad actor is hard to detect in isolation. A ring of 500 produces a **st
 |---|---|
 | Frontend hosting | AWS Amplify |
 | Backend API (Node.js) | EC2 t3.micro |
-| ML Service (FastAPI + models) | EC2 t3.small (models via HuggingFace Hub, inference runs locally) |
+| ML Service (FastAPI + models) | EC2 t3.medium — 4 GB RAM required for sequential DistilBERT / XGBoost / Isolation Forest loading |
 | Database | RDS PostgreSQL db.t3.micro |
 | Cache + Bull queue backing | ElastiCache Redis (cache.t3.micro) |
 | Static assets + model files | S3 Standard |
@@ -757,7 +760,9 @@ GET https://api.waqi.info/feed/geo:{lat};{lng}/?token={TOKEN}
 **Status: ✅ Free, built into browser — HTTPS mandatory**
 
 ```javascript
-// Frontend — pings backend every 15 minutes while worker is active
+// Frontend — pings backend every 2 minutes while worker is active.
+// 2-minute granularity is required to reconstruct a meaningful movement path
+// (10-15 data points over 20-30 min) for anti-spoofing location-continuity checks.
 useEffect(() => {
   const sendLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -768,7 +773,7 @@ useEffect(() => {
       });
     });
   };
-  const interval = setInterval(sendLocation, 15 * 60 * 1000);
+  const interval = setInterval(sendLocation, 2 * 60 * 1000); // 2-minute granularity
   return () => clearInterval(interval);
 }, []);
 ```
@@ -814,7 +819,7 @@ const payout = await razorpay.payouts.create({
 - Under 5 minutes end-to-end
 - No documents required (Aadhaar/PAN optional for higher tiers)
 - Mobile-first, budget Android optimised
-- Hindi + English + Kannada throughout
+- Hindi + English throughout
 
 ### Step-by-Step
 
@@ -912,7 +917,7 @@ Dual-source confidence validated (≥ 75?)
            ↓
 Claim record created → status: APPROVED
            ↓
-Payout job added to Bull queue (Redis-backed, Node-native)
+Payout job added to Bull queue (Redis-backed, third-party npm library)
            ↓
 Razorpay Payout API called → UPI credit
            ↓
@@ -967,7 +972,7 @@ Razorpay error → retry 3× with exponential backoff (1 min, 5 min, 15 min) →
 - `/api/community-triggers/vote` — Vote for a trigger proposal (one vote per worker)
 - `/api/community-triggers/list` — List all proposals
 - Anti-fraud: Only authenticated workers can propose/vote; duplicate voting blocked
-- Zone guard: workers can vote only on proposals in their own registered zone
+- Zone guard: workers can vote only on proposals in their own registered zone. *Edge case: a worker who changes their registered zone mid-week will be evaluated against their zone-at-vote-time; any zone change during an open proposal cycle is logged and flagged for review to prevent zone-hopping abuse.*
 - News verification is executed immediately at post submission (no delayed check)
 - Verifier is wording-agnostic and typo-tolerant (fuzzy token + n-gram scoring) to handle varied phrasing
 - Community threshold: only news-verified proposals with **>50% area vote share** move to review
@@ -1024,7 +1029,7 @@ Razorpay error → retry 3× with exponential backoff (1 min, 5 min, 15 min) →
 |---|---|
 | Zone-based architecture | Each zone monitored independently; new city = new zone config |
 | Stateless backend | JWT-based auth; any node can serve any request |
-| ML service isolation | FastAPI on separate EC2 t3.small — scales independently from Node backend |
+| ML service isolation | FastAPI on separate EC2 t3.medium — scales independently from Node backend |
 | Database indexing | Indexes on `worker_id`, `zone_id`, `policy_status`, `claim_timestamp` on RDS |
 | Phase 3 stream processing | AWS MSK (Managed Kafka) for real-time trigger streams at city scale |
 
@@ -1109,7 +1114,7 @@ India's Q-Commerce sector reached **> $10 billion GMV** with **30 million monthl
 |---|---|
 | Customer Acquisition Cost | ₹0 (embedded onboarding via platform partner app) |
 | Avg. annual revenue per worker | ₹4,600–₹5,460 (₹89–₹105/week × 52 weeks) |
-| Estimated 3-year worker LTV | ₹2,000–₹3,500 |
+| Estimated 3-year worker LTV | ₹2,000–₹3,500 *(net of ~60% BCR claims payout, 15% platform revenue share, 20% reinsurer share, and operational costs — reflects net contribution margin over 3 years, not gross premium revenue)* |
 | CAC payback period | < 4 weeks |
 | Estimated weekly opt-out rate | 8–12% (mitigated by 4-week minimum commitment) |
 | Platform revenue share | 15% of premiums collected |
@@ -1120,6 +1125,8 @@ India's Q-Commerce sector reached **> $10 billion GMV** with **30 million monthl
 Direct-to-worker insurance sales fail in India — historical conversion rates for direct gig worker insurance are under 3%. KaryaKavach's GTM is **B2B2C embedded distribution:**
 
 KaryaKavach approaches Zepto/Blinkit and frames the product as a **worker welfare initiative**. The platform embeds premium deduction into the weekly settlement cycle — the worker opts in once at onboarding, and ₹89/week is deducted from their Friday payout automatically. Platform receives a **15% revenue share** on collected premiums AND gets measurable worker retention benefit during monsoon season — reducing recruitment and retraining costs.
+
+> **Conflict-of-interest mitigation:** A platform that earns revenue per premium could, in theory, benefit from more disruption events. KaryaKavach mitigates this structurally: (a) triggers are set and verified exclusively by third-party data sources (OWM, WAQI, PIB) with no platform input; (b) the revenue share is capped and paid on premiums collected — not on claims paid — so more disruptions do not increase the platform's share; (c) circuit-breaker and loss-ratio caps constrain any outsized payout scenario.
 
 This is exactly the model Acko used with Ola in 2019 to achieve **60%+ insurance attachment rates.** Embedded financial products consistently outperform standalone products in this demographic.
 
@@ -1170,4 +1177,6 @@ KaryaKavach is designed as an **insurer-partnered parametric protection platform
 > **KaryaKavach — Because the last mile deserves a safety net.**
 
 **Phase 1 Demo Video:** https://www.youtube.com/watch?v=Q77hxJIc8bY
+
+**Phase 2 Demo Video:** https://www.youtube.com/watch?v=Q77hxJIc8bY
 **Team:** [Hackuracy] | Guidewire DEVTrails 2026
