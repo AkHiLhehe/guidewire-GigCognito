@@ -8,15 +8,18 @@ import { createOrRenewPolicyForWorker } from "../services/policy/policy-create.s
 
 const router = Router();
 
-router.post("/quote", (req, res) => {
-  const result = calculateWeeklyPremium(req.body);
+router.post("/quote", async (req, res) => {
+  const result = await calculateWeeklyPremium(req.body);
   res.json(result);
 });
 
-router.post("/create", (req, res) => {
-  const result = createPolicy(req.body);
-  if ("error" in result) return res.status(400).json(result);
-  res.json(result);
+router.post("/create", async (req, res) => {
+  try {
+    const result = await createPolicy(req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ error: err instanceof Error ? err.message : "Policy creation failed" });
+  }
 });
 
 router.post("/create-or-renew", authenticateWorker, async (req, res) => {

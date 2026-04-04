@@ -30,7 +30,7 @@ export interface PolicyRecord {
  * - 7-day term, zone lock, tier lock, waiting period, no-claim bonus, etc.
  * - Calls calculateWeeklyPremium for dynamic pricing.
  */
-export function createPolicy(input: PolicyInput): PolicyRecord {
+export async function createPolicy(input: PolicyInput): Promise<PolicyRecord> {
 	// Underwriting: enforce 7-day waiting period for new accounts
 	if (input.tenureMonths === 0) {
 		const now = new Date();
@@ -41,7 +41,7 @@ export function createPolicy(input: PolicyInput): PolicyRecord {
 	}
 
 	// Pricing: dynamic weekly premium
-	const pricing: PricingOutput = calculateWeeklyPremium({
+	const pricing: PricingOutput = await calculateWeeklyPremium({
 		tier: input.tier,
 		season: input.season,
 		zoneRisk: input.zoneRisk,

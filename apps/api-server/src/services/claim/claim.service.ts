@@ -1,6 +1,7 @@
 import { logAudit } from "../audit-log.service";
 import { evaluateFraud, type FraudSignals } from "../fraud/fraud-score.service";
 import { detectRing, type ZoneClaimBurst }  from "../fraud/ring-detection.service";
+import { scoreFraudML } from "../ml/ml-client.service";
 import { calcPayoutAmount, buildPayoutRecord } from "../payout/payout.service";
 import { initiateUPIPayout }                from "../payout/razorpay.service";
 import { shouldRetry, nextRetryDelay, markRolledBack } from "../payout/rollback.service";
@@ -62,7 +63,53 @@ export async function processClaim(req: ClaimRequest): Promise<ClaimResult> {
   }
 
   // 2. Fraud check (GPS, signals) BEFORE payout
-  const fraud = evaluateFraud(req.signals);
+  let fraud = evaluateFraud(req.signals);
+  try {
+    const mlFraud = await scoreFraudML({
+      worker_id: req.workerId,
+      gps_in_zone: req.signals.gpsInZone,
+      location_continuous: req.signals.locationContinuous,
+      impossible_speed: !req.signals.locationContinuous,
+      ip_distance_km: req.signals.ipLocationMatch ? 0 : 120,
+      fingerprint_consistent: req.signals.fingerprintConsistent,
+      platform_online: req.signals.platformWasOnline,
+      device_has_motion: req.signals.deviceHasMotion,
+      account_age_days: req.signals.accountOlderThan7Days ? 30 : 1,
+      claims_last_7d: Math.round(req.zoneBurst.claimsInWindow / 4),
+    });
+
+    if (mlFraud.decision === "AUTO_REJECT") {
+      fraud = {
+        ...fraud,
+        action: "REJECT",
+        payoutPct: 0,
+        message: `ML fraud decision: ${mlFraud.rationale}`,
+      };
+    } else if (mlFraud.decision === "MANUAL_REVIEW") {
+      fraud = {
+        ...fraud,
+        action: "HUMAN_REVIEW",
+        payoutPct: 0,
+        message: `ML fraud decision: ${mlFraud.rationale}`,
+      };
+    } else if (mlFraud.decision === "PROVISIONAL") {
+      fraud = {
+        ...fraud,
+        action: "PROVISIONAL",
+        payoutPct: mlFraud.payout_percent,
+        message: `ML fraud decision: ${mlFraud.rationale}`,
+      };
+    } else {
+      fraud = {
+        ...fraud,
+        action: "AUTO_APPROVE",
+        payoutPct: mlFraud.payout_percent,
+        message: "ML fraud decision: clean profile",
+      };
+    }
+  } catch {
+    // If ML service is unavailable, keep deterministic fallback behavior.
+  }
   if (fraud.action === "REJECT") {
     logAudit("CLAIM_REJECTED", req.workerId, claimId, { reason: fraud.message, fraud });
     return {
