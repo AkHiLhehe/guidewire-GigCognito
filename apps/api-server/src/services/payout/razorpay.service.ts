@@ -17,7 +17,7 @@ export async function initiateUPIPayout(params: {
   upiId:            string;
   claimId:          string;
   fundAccountId?:   string;
-}): Promise {
+}): Promise<RZPPayoutResult> {
   if (IS_MOCK) {
     await new Promise(r => setTimeout(r, 300));
     return {
