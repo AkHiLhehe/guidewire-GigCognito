@@ -6,7 +6,7 @@ export function authenticateWorker(req: Request, res: Response, next: NextFuncti
   // Here, we use a dummy worker for demonstration
   if (!req.user) {
     // Simulate a logged-in worker (for dev/testing)
-    req.user = { id: "worker-demo-1", role: "worker" };
+    req.user = { id: "worker-demo-1", role: "worker", zoneId: "BLR_KOR_01" };
   }
   next();
 }

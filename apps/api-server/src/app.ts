@@ -5,6 +5,7 @@ import policyRoutes from "./routes/policy.routes";
 import claimRoutes  from "./routes/claim.routes";
 import workerRoutes from "./routes/worker.routes";
 import communityTriggersRoutes from "./routes/community-triggers.routes";
+import workerDashboardRoutes from "./routes/worker-dashboard.routes";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use("/policy", policyRoutes);
 app.use("/claims", claimRoutes);
 app.use("/worker", workerRoutes);
 app.use("/api/community-triggers", communityTriggersRoutes);
+app.use("/api/worker-dashboard", workerDashboardRoutes);
 
 export default app;

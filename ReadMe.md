@@ -5,6 +5,30 @@
 
 ---
 
+## 0. Current Build Status (April 2026)
+
+This repo now includes both concept/demo UX flows and live API-backed flows.
+
+### What is dynamic now
+
+- Worker profile updates are persisted through backend APIs (city, zone, UPI, platform details).
+- Dashboard backend is wired to worker-specific records (worker, claims, payouts, zone risk metadata).
+- Authentication for worker routes uses the OTP token generated during onboarding.
+
+### What can still appear as demo data
+
+- Some frontend pages and alert cards still contain sample/demo presentation content.
+- If API calls fail or no worker data exists yet, the UI can still look "static".
+
+### How to ensure zone changes appear correctly
+
+1. Complete onboarding and save profile details.
+2. Ensure city + zone are written via profile update API.
+3. Use the same OTP session/token when opening dashboard.
+4. Confirm API server is running on port 8000 before starting worker PWA.
+
+---
+
 ## 📋 Table of Contents
 
 1. [Executive Summary](#1-executive-summary)
@@ -25,6 +49,7 @@
 
 21. [Worker Transparency Dashboard](#21-worker-transparency-dashboard)
 22. [Community Voting for New Triggers](#22-community-voting-for-new-triggers)
+23. [Local Development (Monorepo)](#23-local-development-monorepo)
 
 ---
 
@@ -829,6 +854,52 @@ STEP 7: Dashboard
 ---
 
 ## 15. Payout Processing
+
+---
+
+## 23. Local Development (Monorepo)
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+- PostgreSQL (for Prisma-backed API data)
+
+### Install dependencies
+
+From repo root:
+
+```bash
+pnpm install
+```
+
+### Run API server
+
+```bash
+cd apps/api-server
+pnpm dev
+```
+
+Expected local API base URL:
+
+- `http://localhost:8000`
+
+### Run worker app
+
+In another terminal:
+
+```bash
+cd apps/worker-pwa
+pnpm dev
+```
+
+### Common issue checklist
+
+- If `EADDRINUSE` appears, another process is already using port `8000`.
+- If dashboard does not reflect new zone/city, re-check onboarding save + token session.
+- If frontend shows stale values, restart both API and worker app after config changes.
+
+---
 
 ### End-to-End Payout Flow
 

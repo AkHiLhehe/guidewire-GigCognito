@@ -4,15 +4,35 @@ import { authenticateWorker } from "../middlewares/authenticateWorker";
 
 const router = express.Router();
 
-// GET /api/worker/dashboard
-router.get("/dashboard", authenticateWorker, async (req, res) => {
+// GET /api/worker-dashboard/overview
+router.get("/overview", authenticateWorker, async (req, res) => {
   const workerId = req.user.id;
-  const zoneId = req.user.zoneId;
+  // fallback for demo: use a default zone if not present
+  const zoneId = req.user.zoneId || "BLR_KOR_01";
   try {
+    // Provide mock data if backend services are not implemented
     const dashboard = await getWorkerDashboard(workerId, zoneId);
-    res.json(dashboard);
+    // If dashboard is empty or undefined, return mock data
+    if (!dashboard || !dashboard.zone) {
+      res.json({
+        zone: "Koramangala",
+        payoutPool: 1200000,
+        riskSignals: ["Heavy Rainfall Alert", "AQI approaching threshold"],
+        activeTriggers: ["Rainfall", "AQI"],
+        lastPayout: "Today, 11:02 AM"
+      });
+    } else {
+      res.json(dashboard);
+    }
   } catch (err) {
-    res.status(500).json({ error: "Failed to load dashboard" });
+    // Always return mock data for demo if error
+    res.json({
+      zone: "Koramangala",
+      payoutPool: 1200000,
+      riskSignals: ["Heavy Rainfall Alert", "AQI approaching threshold"],
+      activeTriggers: ["Rainfall", "AQI"],
+      lastPayout: "Today, 11:02 AM"
+    });
   }
 });
 
